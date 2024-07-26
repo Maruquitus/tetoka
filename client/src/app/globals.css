@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: Lemonmilk-Regular;
+  src: url("../../public/Lemon Milk Pro Regular.otf");
+}
+@font-face {
+  font-family: Lemonmilk-Bold;
+  src: url("../../public/Lemon Milk Pro Bold.otf");
+}
+@font-face {
+  font-family: Lemonmilk-Medium;
+  src: url("../../public/Lemon Milk Pro Medium.otf");
+}
+@layer base {
+  * {
+    font-family: "Lemonmilk-Regular", system-ui, sans-serif;
+    transition-duration: 300ms;
+    transition-property: color, background-color;
+  }
+}
