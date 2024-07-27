@@ -1,32 +1,25 @@
-import { Card } from "@/components/Card";
-import {
-  fa1,
-  faBook,
-  faBookOpen,
-  faCar,
-  faGraduationCap,
-  faIdBadge,
-  faMoneyBill,
-  faNewspaper,
-  faPaperPlane,
-  faPlane,
-  faScaleBalanced,
-} from "@fortawesome/free-solid-svg-icons";
+import { Post } from "@/components/Post";
 
 export default function Home() {
   return (
     <main>
-      <h1 className="text-center text-xl sm:text-2xl mt-4 dark:text-white w-full font-medium">
-        No que você quer se{" "}
-        <span className="text-primary font-medium">tocar</span>?
-      </h1>
-      <div className="w-11/12 sm:w-4/5 flex gap-x-10 justify-items-center justify-center flex-wrap gap-y-4 mx-auto mt-4">
-        <Card icon={faIdBadge} label="Emissão do RG" />
-        <Card icon={faCar} label="Emissão da CNH" />
-        <Card icon={faMoneyBill} label="Como empreender" />
-        <Card icon={faGraduationCap} label="Como melhorar na faculdade" />
-        <Card icon={faBookOpen} label="Concursos" />
-        <Card icon={faScaleBalanced} label="Legislação" />
+      <div className="grid grid-cols-1 items-stretch md:grid-cols-2 rounded-lg mx-auto h-80 gap-x-4 gap-y-2 mt-10 w-4/5">
+        <Post
+          title="Concurso PMCE: oportunidade imperdível"
+          content="A Polícia Militar do Ceará está com inscrições abertas para o concurso público 2024. São 500 vagas para soldado, com salário inicial de R$ 4.200,00. O prazo para se inscrever é até 31 de agosto, e as provas serão realizadas em novembro. Prepare-se e garanta sua vaga!"
+        />
+        <Post
+          title="Participe do concurso da PMCE 2024"
+          content="A PMCE abriu inscrições para o concurso de soldado 2024. São 500 vagas com salário inicial de R$ 4.200,00. Inscrições até 31 de agosto, provas em novembro. Não perca essa chance de começar uma carreira na Polícia Militar!"
+        />
+        <Post
+          title="Concurso para soldado da PMCE 2024"
+          content="A Polícia Militar do Ceará anuncia concurso com 500 vagas para soldado e salário inicial de R$ 4.200,00. Inscrições abertas até 31 de agosto, com provas em novembro. Aproveite essa oportunidade!"
+        />
+        <Post
+          title="Inscrições abertas para o concurso da PMCE"
+          content="A PMCE está com inscrições abertas para o concurso público 2024. São 500 vagas para soldado, com salário inicial de R$ 4.200,00. Inscrições até 31 de agosto e provas em novembro. Garanta sua vaga e comece sua carreira na Polícia Militar!"
+        />
       </div>
     </main>
   );

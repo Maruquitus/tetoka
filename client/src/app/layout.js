@@ -11,7 +11,7 @@ export default function RootLayout({ children }) {
       <head>
         <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
       </head>
-      <body className="dark:bg-black">
+      <body className="dark:bg-black select-none">
         <Header />
         {children}
       </body>
