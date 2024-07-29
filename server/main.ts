@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import { AuthenticatedUser } from "./interfaces";
 import { run } from "./config/db";
 import { authenticateUser } from "./services/AuthService";
+import authRoutes from "./routes/AuthRoutes";
+import userRoutes from "./routes/UserRoutes";
+import postRoutes from "./routes/PostRoutes";
 
 /*===========IMPORTS===========*/
 const express = require("express");
@@ -13,9 +16,6 @@ const session = require("express-session");
 var LocalStrategy = require("passport-local");
 
 /*===========CONFIGURAÇÕES INICIAIS===========*/
-//Inicializar a bd
-run();
-
 //Usar o body parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -46,11 +46,11 @@ passport.use(
   ) {
     const result = await authenticateUser(username, password);
     if (result instanceof Error) {
-      return cb(null, false, { message: result.message });
+      return cb(null, false, result.message);
     } else {
       return cb(null, {
-        id: result._id,
-        username: result.user,
+        _id: result._id,
+        username: result.username,
       } as AuthenticatedUser);
     }
   })
@@ -59,7 +59,7 @@ passport.use(
 //Serialização e deserialização
 passport.serializeUser(function (user: AuthenticatedUser, cb: Function) {
   process.nextTick(function () {
-    cb(null, { id: user.id, username: user.username });
+    cb(null, { _id: user._id, username: user.username });
   });
 });
 
@@ -69,14 +69,21 @@ passport.deserializeUser(function (user: AuthenticatedUser, cb: Function) {
   });
 });
 
+//Inicializar o servidor
 const port = 3001;
-app.listen(port, () => {
-  console.log(`Servidor executando na porta ${port}`);
-});
-
+async function init() {
+  const db = await run(); //Aguardar inicialização da bd
+  if (!db) throw Error("Erro ao inicializar bd!");
+  app.listen(port, () => {
+    console.log(`Servidor executando na porta ${port}`);
+  });
+}
+init();
 
 /*===========ROTAS===========*/
-app.use("/", /* router da rota */);
+app.use("/auth/", authRoutes);
+app.use("/users/", userRoutes);
+app.use("/posts/", postRoutes);
 
 // Fazer com que o Node sirva os arquivos do app em React criado
 app.use(express.static(path.resolve(__dirname, "../client/build")));

@@ -1,9 +1,23 @@
+"use client";
 import { Post } from "@/components/Post";
+import { ProgressBar } from "@/components/ProgressBar";
+import { Title } from "@/components/Title";
+import { useState } from "react";
 
 export default function Home() {
+  const [progress, setProgress] = useState(0);
   return (
-    <main>
-      <div className="grid grid-cols-1 items-stretch md:grid-cols-2 rounded-lg mx-auto h-80 gap-x-4 gap-y-2 mt-10 w-4/5">
+    <main
+      onClick={() => {
+        setProgress(progress + 1);
+      }}
+      className="w-4/5 mx-auto"
+    >
+      <Title>Progresso nos cursos</Title>
+      <ProgressBar progress={progress} />
+
+      <Title>Seu feed</Title>
+      <div className="grid grid-cols-1 items-stretch md:grid-cols-2 rounded-lg h-80 gap-x-4 gap-y-2">
         <Post
           title="Concurso PMCE: oportunidade imperdível"
           content="A Polícia Militar do Ceará está com inscrições abertas para o concurso público 2024. São 500 vagas para soldado, com salário inicial de R$ 4.200,00. O prazo para se inscrever é até 31 de agosto, e as provas serão realizadas em novembro. Prepare-se e garanta sua vaga!"

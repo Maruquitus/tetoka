@@ -46,5 +46,4 @@ module.exports = {
       bold: "Lemonmilk-Bold",
     },
   },
-  plugins: [require("@tailwindcss/line-clamp")],
 };

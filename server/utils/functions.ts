@@ -1,6 +1,15 @@
 import { pbkdf2 } from "crypto";
+import { Request } from "express";
 
 const SALT = process.env.SALT as string;
+
+export function checkAdmin(token: string) {
+  return token === process.env.ADMIN_TOKEN;
+}
+
+export function checkBrowser(req: Request) {
+  return req.headers.accept && req.headers.accept.includes("text/html");
+}
 
 export function validateUser(usuário: string): boolean {
   const regex = /^[a-zA-Z0-9_]+$/;

@@ -1,8 +1,8 @@
-import { get } from "./UserService";
+import { getByUsername } from "./UserService";
 import { hashPassword } from "../utils/functions";
 
-export async function authenticateUser(user: string, password: string) {
-  const userDoc = await get(user);
+export async function authenticateUser(username: string, password: string) {
+  const userDoc = await getByUsername(username);
   const usuárioExiste = userDoc != null;
   const msg = "Usuário e/ou senha inválidos!";
   if (usuárioExiste) {

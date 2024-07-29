@@ -16,13 +16,14 @@ const client = new MongoClient(URL_BD, {
   tlsCertificateKeyFile: credentials,
   serverApi: ServerApiVersion.v1,
 });
-let database: Db, users: Collection<Document>;
+let database: Db, users: Collection<Document>, posts: Collection<Document>;
 
 export async function run() {
   try {
     await client.connect();
     database = client.db("db");
     users = database.collection("Users");
+    posts = database.collection("Posts");
     console.log("Conexão com a base de dados realizada com êxito!");
     return database;
   } catch (Exception) {
@@ -30,4 +31,4 @@ export async function run() {
   }
 }
 
-export { users };
+export { users, posts };
