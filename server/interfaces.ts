@@ -16,7 +16,8 @@ export interface AuthenticatedUser {
 
 export interface Post {
   _id: ObjectId,
-  content?: string,
+  title: string,
+  content: string,
   icon: string,
   steps?: PostStep[]
 }

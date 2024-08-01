@@ -24,8 +24,8 @@ export const authenticate = (
         }
       });
     } else {
-      if (isBrowser) res.redirect(`/login?error=${info.message}`);
-      else res.status(401).send(info.message);
+      if (isBrowser) res.redirect(`/login?error=${info}`);
+      else res.status(401).send(info);
     }
   })(req, res, next);
 };

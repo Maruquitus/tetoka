@@ -9,12 +9,17 @@ export function ProgressBar(props: { progress: number }) {
   });
 
   return (
-    <div className="bg-foreground dark:bg-foreground-dark mt-2 h-4 w-full rounded-full overflow-hidden">
-      <div
-        ref={progressRef}
-        id="progress"
-        className={`bg-primary dark:bg-primary-dark transition-all duration-200 flex h-4`}
-      ></div>
+    <div>
+      <div className="bg-foreground dark:bg-foreground-dark mt-2 h-4 w-full rounded-full overflow-hidden">
+        <div
+          ref={progressRef}
+          id="progress"
+          className={`bg-primary w-0 dark:bg-primary-dark transition-transform duration-200 flex h-4`}
+        />
+      </div>
+      <h1 className="dark:text-white font-medium text-right">
+        {props.progress}%
+      </h1>
     </div>
   );
 }

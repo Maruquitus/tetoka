@@ -14,7 +14,7 @@ export function Button(props: {
     white: "bg-white",
   };
 
-  const buttonClass = `${defaultClass} ${typeClasses[selectedType]}`;
+  const buttonClass = `${defaultClass} ${typeClasses[selectedType]} ${props.className}`;
 
   return (
     <button onClick={() => props.onClick?.()} className={buttonClass}>

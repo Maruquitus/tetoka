@@ -4,19 +4,25 @@ import {
   deletePost,
   getPost,
   clearPosts,
+  listPosts,
+  queryPostsByTags,
 } from "../controllers/PostController";
-import { authenticateAdmin } from "../middleware/AdminAuthMiddleware";
+import { requireAdminToken } from "../middleware/AdminAuthMiddleware";
 const router = Router();
 
-router.put("/", authenticateAdmin, (req: Request, res: Response) =>
+router.put("/", requireAdminToken, (req: Request, res: Response) =>
   newPost(req, res)
 );
-router.delete("/all", authenticateAdmin, (req: Request, res: Response) =>
-  clearPosts(req, res)
-);
-router.delete("/:postid", authenticateAdmin, (req: Request, res: Response) =>
+router.delete("/:postid", requireAdminToken, (req: Request, res: Response) =>
   deletePost(req, res)
 );
+router.delete("/", requireAdminToken, (req: Request, res: Response) =>
+  clearPosts(req, res)
+);
+router.get("/tags", (req: Request, res: Response) =>
+  queryPostsByTags(req, res)
+);
 router.get("/:postid", (req: Request, res: Response) => getPost(req, res));
+router.get("/", (req: Request, res: Response) => listPosts(req, res));
 
 export default router;

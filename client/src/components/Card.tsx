@@ -15,7 +15,7 @@ export function Card(props: { icon: IconProp | string; label: string }) {
       >
         {typeof props.icon !== "string" ? (
           <FontAwesomeIcon
-            className={`m-auto text-6xl transition-all duration-[125ms] sm:text-7xl text-gray-800 dark:text-white group-hover:scale-[102%] ${
+            className={`m-auto text-6xl transition-all duration-[125ms] sm:text-7xl text-dark dark:text-light group-hover:scale-[102%] ${
               selected && "text-white"
             }`}
             icon={props.icon}

@@ -1,7 +1,7 @@
 import { checkAdmin } from "../utils/functions";
 import { Request, Response, NextFunction } from "express";
 
-export const authenticateAdmin = (req: Request, res: Response, next: NextFunction) => {
+export const requireAdminToken = (req: Request, res: Response, next: NextFunction) => {
   const auth_token = req.headers["authorization"];
   if (!auth_token)
     return res

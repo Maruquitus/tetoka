@@ -38,6 +38,8 @@ module.exports = {
         "background-dark": "#0D1414",
         foreground: "#e5e7eb",
         "foreground-dark": "#163030",
+        dark: "#1f2937",
+        light: "#e5e7eb",
       },
     },
     fontWeight: {},

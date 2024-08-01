@@ -18,6 +18,14 @@ export async function clear() {
   return users.deleteMany({});
 }
 
+export async function getCourseProgress(courseID: ObjectId) {
+
+}
+
+export async function setLastViewedPost(userID: ObjectId, postID: ObjectId) {
+  return await users.updateOne({ _id: userID }, { lastViewedPost: postID });
+}
+
 export async function create(username: string, password: string) {
   if (validateUser(username) == false)
     return Error(

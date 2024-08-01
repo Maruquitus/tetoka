@@ -4,7 +4,8 @@ import { ObjectId } from "mongodb";
 export async function create(
   title: string,
   icon: string,
-  content?: string,
+  tags: string[],
+  content: string,
   steps?: PostStep[]
 ) {
   await posts.insertOne({
@@ -12,11 +13,20 @@ export async function create(
     icon: icon,
     content: content,
     steps: steps,
+    tags: tags,
   });
 }
 
 export async function getByID(_id: ObjectId) {
   return await posts.findOne({ _id: _id });
+}
+
+export async function list() {
+  return await posts.find({}).toArray();
+}
+
+export async function getByTags(postTags: string[]) {
+  return await posts.find({ tags: { $in: postTags } }).toArray();
 }
 
 export async function deleteByID(_id: ObjectId) {
