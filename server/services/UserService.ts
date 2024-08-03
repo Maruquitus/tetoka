@@ -18,12 +18,10 @@ export async function clear() {
   return users.deleteMany({});
 }
 
-export async function getCourseProgress(courseID: ObjectId) {
-
-}
+export async function getCourseProgress(courseID: ObjectId) {}
 
 export async function setLastViewedPost(userID: ObjectId, postID: ObjectId) {
-  return await users.updateOne({ _id: userID }, { lastViewedPost: postID });
+  return users.updateOne({ _id: userID }, { $set: { lastViewedPost: postID } });
 }
 
 export async function create(username: string, password: string) {
@@ -38,7 +36,11 @@ export async function create(username: string, password: string) {
     if (result instanceof Error) {
       return Error("Erro no hash da senha!");
     }
-    await users.insertOne({ username: username, password: result });
+    await users.insertOne({
+      username: username,
+      password: result,
+      lastViewedPost: "",
+    });
     return "Usuário criado com sucesso!";
   } else {
     return Error("Já existe um usuário com esse nome!");

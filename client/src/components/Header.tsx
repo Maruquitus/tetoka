@@ -37,8 +37,8 @@ export function Header() {
     <header className="bg-primary dark:bg-primary-dark px-4 h-20 w-full top-0 left-0 flex">
       <FontAwesomeIcon
         onClick={() => setMenuOpen(!menuOpen)}
-        className="sm:hidden flex my-auto mr-4 cursor-pointer"
-        size="xl"
+        className="sm:invisible visible sm:absolute flex my-auto mr-4 cursor-pointer"
+        size="lg"
         color="white"
         icon={faBars}
       />

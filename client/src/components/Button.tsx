@@ -6,7 +6,7 @@ export function Button(props: {
   onClick?: Function;
 }) {
   const defaultClass =
-    "h-10 w-28 my-auto hover:scale-[102%] duration-300 transition-all rounded-lg p-2 text-white";
+    "h-10 w-28 my-auto hover:scale-[102%] duration-300 transition-transform rounded-lg p-2 text-white";
   const selectedType = props.type ? props.type : "default";
   const typeClasses = {
     default: "bg-primary dark:bg-primary-dark",

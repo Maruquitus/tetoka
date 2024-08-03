@@ -6,6 +6,9 @@ export const requireAuthenticatedUser = (
   res: Response,
   next: NextFunction
 ) => {
-  if (!req.isAuthenticated()) return res.status(401);
+  if (!req.isAuthenticated())
+    return res
+      .status(401)
+      .send("O usuário precisa estar autenticado para realizar essa ação!");
   next();
 };

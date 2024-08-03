@@ -12,6 +12,7 @@ export interface AuthenticatedRequest extends Request {
 export interface AuthenticatedUser {
   _id: ObjectId;
   username: string;
+  lastViewedPost: string;
 }
 
 export interface Post {

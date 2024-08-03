@@ -14,8 +14,9 @@ const router = Router();
 
 router.post(
   "/view-post/:postid",
-  (req: AuthenticatedRequest, res: any) => requireAuthenticatedUser,
-  (req: AuthenticatedRequest, res: any) => setLastViewedPostByUser
+  (req: AuthenticatedRequest, res: any, next: any) =>
+    requireAuthenticatedUser(req, res, next),
+  (req: AuthenticatedRequest, res: any) => setLastViewedPostByUser(req, res)
 );
 router.put("/", (req, res) => newUser(req, res));
 router.get("/:userid", requireAdminToken, (req, res) => getUser(req, res));

@@ -1,6 +1,7 @@
 export interface AuthenticatedUser {
   _id: string;
   username: string;
+  lastViewedPost: string;
 }
 
 export interface Post {

@@ -8,15 +8,20 @@ import { Button } from "@/components/Button";
 import { Subtitle } from "@/components/Subtitle";
 import { Highlight } from "@/components/Highlight";
 import { Icon } from "@/components/Icon";
+import { Step } from "@/components/Step";
+import { setLastViewedPost } from "@/api/User";
 
 export default function PostPage(props: { params: { post_id: string } }) {
   const [loading, setLoading] = useState(true);
   const [post, setPost] = useState<Post | null>(null);
 
   useEffect(() => {
-    get(props.params.post_id).then((postData: Post | null) => {
-      setLoading(false);
-      if (postData) setPost(postData);
+    get(props.params.post_id).then(async (postData: Post | null) => {
+      if (postData) {
+        if (post?.steps) await setLastViewedPost(postData._id);
+        setPost(postData);
+        setLoading(false);
+      }
     });
   }, []);
 
@@ -29,7 +34,21 @@ export default function PostPage(props: { params: { post_id: string } }) {
               <Icon className="mr-2" icon={post?.icon} />
               <Title>{post?.title}</Title>
             </div>
-            <p className="mt-2">{post?.content}</p>
+            <p className="text-dark dark:text-light mt-2 whitespace-pre-line">
+              {post?.content}
+            </p>
+            <div className="gap-y-4">
+              {post.steps?.map((step, ind) => {
+                return (
+                  <Step
+                    title={step.title}
+                    content={step.content}
+                    icon={step.icon}
+                    number={ind + 1}
+                  />
+                );
+              })}
+            </div>
           </div>
         )}
         {!post && (

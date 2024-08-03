@@ -17,8 +17,9 @@ export const setLastViewedPostByUser = async (
   const userID = req.user._id;
   const postID = req.params.postid;
 
-  if (userID.length < 24 || postID.length < 24)
-    return await setLastViewedPost(new ObjectId(userID), new ObjectId(postID));
+  if (userID.length < 24 || postID.length < 24) return res.sendStatus(400);
+  await setLastViewedPost(new ObjectId(userID), new ObjectId(postID));
+  return res.status(200).send("Post visto com sucesso!");
 };
 
 export const newUser = async (req: Request, res: Response) => {
