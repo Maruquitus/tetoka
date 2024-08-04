@@ -1,0 +1,12 @@
+{
+  "name": "tetoka",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "concurrently \"cd server && nodemon\" \"cd client && npm run dev\""
+  },
+  "author": "Marcos Sousa",
+  "license": "ISC",
+  "dependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

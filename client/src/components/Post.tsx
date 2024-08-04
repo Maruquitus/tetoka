@@ -8,7 +8,7 @@ export function Post(props: {
   return (
     <div
       onClick={() => (document.location.href = `/post/${props._id}`)}
-      className="bg-primary dark:bg-primary-dark sm:w-full min-h-40 h-fit hover:scale-[98%] duration-300 transition-transform cursor-pointer rounded-lg p-6"
+      className="bg-primary dark:bg-primary-dark h-fit hover:scale-[98%] duration-300 transition-transform cursor-pointer rounded-lg p-6"
     >
       <div className="flex">
         <Icon className="mr-2 my-auto" whiteBackground icon={props.icon} />

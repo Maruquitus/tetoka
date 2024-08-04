@@ -37,3 +37,7 @@
     transition-property: color, background-color;
   }
 }
+
+* {
+  scroll-behavior: smooth;
+}

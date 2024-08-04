@@ -50,6 +50,26 @@ export const listPosts = async (req: Request, res: Response) => {
   return res.status(200).send(await list());
 };
 
+export const loadPosts = async (req: Request, res: Response) => {
+  const pageNumber = parseInt(req.params.pagenumber);
+  if (isNaN(pageNumber) || pageNumber <= 0) return res.sendStatus(400);
+
+  return res.status(200).send(await list(pageNumber));
+};
+
+export const loadPostsByTags = async (req: Request, res: Response) => {
+  const pageNumber = parseInt(req.params.pagenumber);
+  const tags = req.query.tags as string[] | string;
+  if (!tags || isNaN(pageNumber) || pageNumber <= 0) return res.sendStatus(400);
+
+  const postsData = await getByTags(
+    Array.isArray(tags) ? tags : [tags],
+    pageNumber
+  );
+  if (!postsData || postsData.length === 0) return res.sendStatus(404);
+  return res.status(200).send(postsData);
+};
+
 export const queryPostsByTags = async (req: Request, res: Response) => {
   const tags = req.query.tags as string[] | string;
   if (!tags) return res.sendStatus(400);

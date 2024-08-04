@@ -1,19 +1,21 @@
 "use client";
-import { useState, useEffect } from "react";
 import { get } from "@/api/Post";
 import { Post } from "@/interfaces";
-import { LoadDependent } from "@/components/LoadDependent";
 import { Title } from "@/components/Title";
 import { Button } from "@/components/Button";
 import { Subtitle } from "@/components/Subtitle";
 import { Highlight } from "@/components/Highlight";
+import { LoadDependent } from "@/components/LoadDependent";
 import { Icon } from "@/components/Icon";
 import { Step } from "@/components/Step";
 import { setLastViewedPost } from "@/api/User";
+import { useState, useEffect, useRef } from "react";
 
 export default function PostPage(props: { params: { post_id: string } }) {
   const [loading, setLoading] = useState(true);
   const [post, setPost] = useState<Post | null>(null);
+  const [currentStep, setStep] = useState(1);
+  const stepRefs = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
     get(props.params.post_id).then(async (postData: Post | null) => {
@@ -24,6 +26,17 @@ export default function PostPage(props: { params: { post_id: string } }) {
       }
     });
   }, []);
+
+  const handleStepChange = (stepNumber: number) => {
+    setStep(stepNumber);
+    const stepRef = stepRefs.current[stepNumber - 1];
+    if (stepRef) {
+      stepRef.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  };
 
   return (
     <LoadDependent isLoading={loading}>
@@ -40,12 +53,19 @@ export default function PostPage(props: { params: { post_id: string } }) {
             <div className="gap-y-4">
               {post.steps?.map((step, ind) => {
                 return (
-                  <Step
-                    title={step.title}
-                    content={step.content}
-                    icon={step.icon}
-                    number={ind + 1}
-                  />
+                  <div
+                    key={ind}
+                    ref={(ref: any) => (stepRefs.current[ind] = ref)}
+                  >
+                    <Step
+                      setStep={handleStepChange}
+                      currentStep={currentStep}
+                      title={step.title}
+                      content={step.content}
+                      icon={step.icon}
+                      number={ind + 1}
+                    />
+                  </div>
                 );
               })}
             </div>

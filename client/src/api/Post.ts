@@ -6,11 +6,11 @@ export async function get(id: string) {
   else return null;
 }
 
-export async function getByTags(tags: string[]) {
+export async function getByTags(tags: string[], page: number) {
   const query = new URLSearchParams();
   tags.forEach((tag) => query.append("tags", tag));
 
-  const res = await fetch(`/api/posts/tags?${query.toString()}`);
+  const res = await fetch(`/api/posts/tags/page/${page}?${query.toString()}`);
 
   if (res.status === 200) {
     return (await res.json()) as Post[];
@@ -19,8 +19,8 @@ export async function getByTags(tags: string[]) {
   }
 }
 
-export async function list() {
-  const res = await fetch(`/api/posts/`);
+export async function list(page: number) {
+  const res = await fetch(`/api/posts/page/${page}`);
 
   if (res.status === 200) {
     return (await res.json()) as Post[];
