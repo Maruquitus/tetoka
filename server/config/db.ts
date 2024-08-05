@@ -9,12 +9,14 @@ import {
 import { configDotenv } from "dotenv";
 configDotenv();
 
-const URL_BD = process.env.URL_BD as string;
+const URI_BD = process.env.URI_BD as string;
 
-const credentials = process.env.CERT_LOCATION as string;
-const client = new MongoClient(URL_BD, {
-  tlsCertificateKeyFile: credentials,
-  serverApi: ServerApiVersion.v1,
+const client = new MongoClient(URI_BD, {
+  serverApi: {
+    version: ServerApiVersion.v1,
+    strict: true,
+    deprecationErrors: true,
+  },
 });
 let database: Db, users: Collection<Document>, posts: Collection<Document>;
 
