@@ -69,3 +69,4 @@ tslint.json
 
 # Certificate
 *.pem
+.vercel

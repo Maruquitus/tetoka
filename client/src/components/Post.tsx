@@ -4,6 +4,7 @@ export function Post(props: {
   content: string;
   _id: string;
   icon: string;
+  seen?: boolean;
 }) {
   return (
     <div
@@ -15,6 +16,14 @@ export function Post(props: {
         <h1 className="text-white my-auto text-lg sm:text-xl font-medium">
           {props.title}
         </h1>
+        {props.seen && (
+          <Icon
+            noBackground
+            icon="check-double"
+            size="xl"
+            className="text-white my-auto ml-auto h-6 w-6 -mt-2 -mr-3"
+          />
+        )}
       </div>
       <p className="text-white text-sm sm:text-base line-clamp-2 sm:line-clamp-3 mt-2">
         {props.content}

@@ -2,6 +2,7 @@ export interface AuthenticatedUser {
   _id: string;
   username: string;
   lastViewedPost: string;
+  postData?: {[keys: string]: number},
 }
 
 export interface Post {

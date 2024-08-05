@@ -8,7 +8,8 @@ import { Highlight } from "@/components/Highlight";
 import { LoadDependent } from "@/components/LoadDependent";
 import { Icon } from "@/components/Icon";
 import { Step } from "@/components/Step";
-import { setLastViewedPost } from "@/api/User";
+import { setLastViewedPost, setPostProgress } from "@/api/User";
+import { checkAuthenticated } from "@/api/Auth";
 import { useState, useEffect, useRef } from "react";
 
 export default function PostPage(props: { params: { post_id: string } }) {
@@ -18,16 +19,31 @@ export default function PostPage(props: { params: { post_id: string } }) {
   const stepRefs = useRef<HTMLDivElement[]>([]);
 
   useEffect(() => {
-    get(props.params.post_id).then(async (postData: Post | null) => {
+    const postId = props.params.post_id;
+    get(postId).then(async (postData: Post | null) => {
+      const [_, user] = await checkAuthenticated();
       if (postData) {
-        if (post?.steps) await setLastViewedPost(postData._id);
+        if (postData.steps) {
+          if (user.postData && user.postData[postId]) {
+            setStep(
+              user.postData[postId] * postData.steps.length + 1
+            );
+          }
+          await setLastViewedPost(postId);
+        }
         setPost(postData);
         setLoading(false);
       }
     });
   }, []);
 
-  const handleStepChange = (stepNumber: number) => {
+  const handleStepChange = async (stepNumber: number) => {
+    if (post?.steps)
+      await setPostProgress(
+        props.params.post_id,
+        stepNumber - 1,
+        post.steps.length
+      );
     setStep(stepNumber);
     const stepRef = stepRefs.current[stepNumber - 1];
     if (stepRef) {
@@ -50,7 +66,7 @@ export default function PostPage(props: { params: { post_id: string } }) {
             <p className="text-dark dark:text-light mt-2 whitespace-pre-line">
               {post?.content}
             </p>
-            <div className="gap-y-4">
+            <div className="gap-y-4 pb-6">
               {post.steps?.map((step, ind) => {
                 return (
                   <div

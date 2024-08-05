@@ -50,6 +50,7 @@ export const checkAuthenticated = async (
         _id: userData?._id,
         username: userData?.username,
         lastViewedPost: userData?.lastViewedPost,
+        postData: userData?.postData,
       } as AuthenticatedUser;
       res.status(200).send([req.isAuthenticated(), filteredUserData]);
     } catch {

@@ -17,7 +17,7 @@ export function ProgressBar(props: { progress: number }) {
           className={`bg-primary w-0 dark:bg-primary-dark transition-transform duration-200 flex h-4`}
         />
       </div>
-      <h1 className="dark:text-white font-medium text-right">
+      <h1 className="dark:text-light text-dark font-medium text-right">
         {props.progress}%
       </h1>
     </div>

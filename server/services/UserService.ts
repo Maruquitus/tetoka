@@ -18,7 +18,15 @@ export async function clear() {
   return users.deleteMany({});
 }
 
-export async function getCourseProgress(courseID: ObjectId) {}
+export async function setPostProgress(
+  userID: ObjectId,
+  postID: ObjectId,
+  stepsCompleted: number,
+  totalSteps: number
+) {
+  const updateField = `postData.${postID}`
+  return users.updateOne({ _id: userID }, { $set: { [updateField]: stepsCompleted/totalSteps } });
+}
 
 export async function setLastViewedPost(userID: ObjectId, postID: ObjectId) {
   return users.updateOne({ _id: userID }, { $set: { lastViewedPost: postID } });

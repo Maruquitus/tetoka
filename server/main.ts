@@ -1,4 +1,3 @@
-import { Request, Response } from "express";
 import { AuthenticatedUser } from "./interfaces";
 import { run } from "./config/db";
 import { authenticateUser } from "./services/AuthService";
@@ -9,7 +8,6 @@ import postRoutes from "./routes/PostRoutes";
 /*===========IMPORTS===========*/
 const express = require("express");
 const bodyParser = require("body-parser");
-const path = require("path");
 export const app = express();
 export var passport = require("passport");
 const session = require("express-session");
@@ -85,10 +83,4 @@ app.use("/auth/", authRoutes);
 app.use("/users/", userRoutes);
 app.use("/posts/", postRoutes);
 
-// Fazer com que o Node sirva os arquivos do app em React criado
-app.use(express.static(path.resolve(__dirname, "../client/build")));
-
-// Todas as outras solicitações GET não tratadas retornarão o app em React
-app.get("*", (req: Request, res: Response) => {
-  res.sendFile(path.resolve(__dirname, "../client/build", "index.html"));
-});
+export default app;

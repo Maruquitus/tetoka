@@ -5,6 +5,7 @@ import {
   deleteByID,
   getByID,
   setLastViewedPost,
+  setPostProgress,
 } from "../services/UserService";
 import { checkBrowser } from "../utils/functions";
 import { ObjectId } from "mongodb";
@@ -20,6 +21,31 @@ export const setLastViewedPostByUser = async (
   if (userID.length < 24 || postID.length < 24) return res.sendStatus(400);
   await setLastViewedPost(new ObjectId(userID), new ObjectId(postID));
   return res.status(200).send("Post visto com sucesso!");
+};
+
+export const setUserPostProgress = async (
+  req: AuthenticatedRequest,
+  res: Response
+) => {
+  const userID = req.user._id;
+  const postID = req.params.postid;
+  const stepsCompleted = parseInt(req.params.stepscompleted);
+  const totalSteps = parseInt(req.params.totalsteps);
+
+  if (
+    userID.length < 24 ||
+    postID.length < 24 ||
+    isNaN(stepsCompleted) ||
+    isNaN(totalSteps)
+  )
+    return res.sendStatus(400);
+  await setPostProgress(
+    new ObjectId(userID),
+    new ObjectId(postID),
+    stepsCompleted,
+    totalSteps
+  );
+  return res.status(200).send("Progress definido com sucesso!");
 };
 
 export const newUser = async (req: Request, res: Response) => {
