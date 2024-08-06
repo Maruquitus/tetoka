@@ -19,8 +19,14 @@ export async function getByTags(tags: string[], page: number) {
   }
 }
 
-export async function list(page: number) {
-  const res = await fetch(`/api/posts/page/${page}`);
+export async function list(page: number, finishedPosts: string[]) {
+  const query = {
+    finishedPosts: JSON.stringify(finishedPosts),
+  };
+
+  const queryString = new URLSearchParams(query).toString();
+
+  const res = await fetch(`/api/posts/page/${page}?${queryString}`);
 
   if (res.status === 200) {
     return (await res.json()) as Post[];

@@ -1,8 +1,10 @@
 import "./globals.css";
+import "./skeleton.css";
 import { Header } from "@/components/Header";
 import { Provider } from "./provider";
 import "@fortawesome/fontawesome-svg-core/styles.css";
 import { config } from "@fortawesome/fontawesome-svg-core";
+
 config.autoAddCss = false; /* eslint-disable import/first */
 
 export const metadata = {

@@ -22,10 +22,10 @@ export async function getByID(_id: ObjectId) {
 }
 
 const postsPerPage = 10;
-export async function list(pageNumber?: number) {
+export async function list(finishedPosts: ObjectId[], pageNumber?: number) {
   if (pageNumber !== undefined) {
     return await posts
-      .find({})
+      .find({ _id: { $nin: finishedPosts } })
       .sort({ _id: 1 })
       .skip((pageNumber - 1) * postsPerPage)
       .limit(postsPerPage)

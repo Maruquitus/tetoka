@@ -17,23 +17,34 @@ export default function Home() {
   const [lastViewedPost, setPost] = useState<Post | null>(null);
   const [user, setUser] = useState<AuthenticatedUser | undefined>();
 
-  const loadPosts = async () => {
+  const loadPosts = async (finishedPosts?: string[]) => {
+    finishedPosts = finishedPosts ? finishedPosts : [];
     setPage(currentPage + 1);
-    await list(currentPage).then((newPosts: Post[] | null) => {
+    await list(currentPage, finishedPosts).then((newPosts: Post[] | null) => {
       if (newPosts) setPosts(posts.concat(newPosts));
     });
   };
 
   const loadData = async () => {
-    await loadPosts();
     checkAuthenticated().then(async (data) => {
       const [isAuthenticated, user] = data;
       setUser(user);
       if (!isAuthenticated) document.location.href = "/login";
       const post = await get(user.lastViewedPost);
+
+      let finishedPosts: string[] = [];
+      if (user.postData) {
+        Object.keys(user.postData).forEach((post_id: string) => {
+          if (user?.postData) {
+            const postProgress = user.postData[post_id];
+            if (postProgress >= 1) finishedPosts.push(post_id);
+          }
+        });
+      }
       if (user.postData && user.postData[user.lastViewedPost])
         setProgress(user.postData[user.lastViewedPost] * 100);
       setPost(post);
+      await loadPosts(finishedPosts);
       setLoading(false);
     });
   };
@@ -93,7 +104,7 @@ export default function Home() {
           {posts.length > 0 &&
             posts.map((post) => (
               <PostComponent
-                seen={user && user.postData && user.postData[post._id] == 1}
+                finished={user && user.postData && user.postData[post._id] == 1}
                 _id={post._id}
                 title={post.title}
                 content={post.content}

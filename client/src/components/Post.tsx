@@ -4,7 +4,7 @@ export function Post(props: {
   content: string;
   _id: string;
   icon: string;
-  seen?: boolean;
+  finished?: boolean;
 }) {
   return (
     <div
@@ -16,7 +16,7 @@ export function Post(props: {
         <h1 className="text-white my-auto text-lg sm:text-xl font-medium">
           {props.title}
         </h1>
-        {props.seen && (
+        {props.finished && (
           <Icon
             noBackground
             icon="check-double"
