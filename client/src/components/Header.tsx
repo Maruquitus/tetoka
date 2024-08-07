@@ -60,7 +60,12 @@ export function Header() {
           </h1>
         </div>
       </div>
-      {loading && <Skeleton loading={loading} className="my-auto mr-4" />}
+      {loading && (
+        <Skeleton
+          loading={loading}
+          className="my-auto -translate-x-4 -translate-y-0.5"
+        />
+      )}
       {!loading && !loggedUser && (
         <div className="gap-x-2 mr-4 hidden sm:flex">
           <Button
