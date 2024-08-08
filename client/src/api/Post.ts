@@ -1,4 +1,4 @@
-import { Post } from "@/interfaces";
+import { Post, PostFilters, UserPostData } from "@/interfaces";
 
 export async function get(id: string) {
   const res = await fetch(`/api/posts/${id}`);
@@ -19,9 +19,10 @@ export async function getByTags(tags: string[], page: number) {
   }
 }
 
-export async function list(page: number, finishedPosts: string[]) {
+export async function list(page: number, userPostData: UserPostData, filter: PostFilters) {
   const query = {
-    finishedPosts: JSON.stringify(finishedPosts),
+    userPostData: JSON.stringify(userPostData),
+    filter: filter,
   };
 
   const queryString = new URLSearchParams(query).toString();

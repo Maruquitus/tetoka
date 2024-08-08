@@ -47,26 +47,19 @@ export const clearPosts = async (req: Request, res: Response) => {
 };
 
 export const listPosts = async (req: Request, res: Response) => {
-  const finishedPosts = req.body.finishedPosts;
-  let finishedPostIDs: ObjectId[] = [];
-  finishedPosts.forEach((postId: string) => {
-    finishedPostIDs.push(new ObjectId(postId));
-  });
-  return res.status(200).send(await list(finishedPostIDs));
+  return res.status(200).send(await list());
 };
 
 export const loadPosts = async (req: Request, res: Response) => {
-  const finishedPosts = req.query.finishedPosts
-    ? JSON.parse(req.query.finishedPosts as string)
+  let filter = req.query.filter as string;
+  filter = filter ? filter : "all";
+  const userPostData = req.query.userPostData
+    ? JSON.parse(req.query.userPostData as string)
     : [];
-  let finishedPostIDs: ObjectId[] = [];
-  finishedPosts.forEach((postId: string) => {
-    finishedPostIDs.push(new ObjectId(postId));
-  });
   const pageNumber = parseInt(req.params.pagenumber);
   if (isNaN(pageNumber) || pageNumber <= 0) return res.sendStatus(400);
 
-  return res.status(200).send(await list(finishedPostIDs, pageNumber));
+  return res.status(200).send(await list(userPostData, pageNumber, filter));
 };
 
 export const loadPostsByTags = async (req: Request, res: Response) => {

@@ -3,26 +3,49 @@ import { ProgressBar } from "@/components/ProgressBar";
 import { Title } from "@/components/Title";
 import { useEffect, useState, useRef } from "react";
 import { Highlight } from "@/components/Highlight";
-import { AuthenticatedUser, Post } from "../../interfaces";
+import { AuthenticatedUser, Post, PostFilters } from "../../interfaces";
 import { Post as PostComponent } from "@/components/Post";
 import { get, list } from "@/api/Post";
 import { LoadDependent } from "@/components/LoadDependent";
 import { checkAuthenticated } from "@/api/Auth";
+import { Filters } from "@/components/Filters";
+import { PostPlaceholder } from "@/components/PostPlaceholder";
 
 export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
+  const [postsLoading, setPostsLoading] = useState(true);
   const [progress, setProgress] = useState(0);
   const [currentPage, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
+  const [selectedFilter, setFilter] = useState<PostFilters>("all");
   const [lastViewedPost, setPost] = useState<Post | null>(null);
   const [user, setUser] = useState<AuthenticatedUser | undefined>();
 
-  const loadPosts = async (finishedPosts?: string[]) => {
-    finishedPosts = finishedPosts ? finishedPosts : [];
+  const handleFilterChange = (filter: PostFilters) => {
+    setPostsLoading(true);
+    setPage(1);
+    setFilter(filter);
+    setPosts([]);
+    setTimeout(() => loadPosts(filter, 1, true), 250);
+  };
+
+  const loadPosts = async (
+    filter?: PostFilters,
+    page?: number,
+    resetPosts?: boolean
+  ) => {
+    const usrPostData = user?.postData ? user.postData : {};
+    filter = filter ? filter : selectedFilter;
+    page = page ? page : currentPage;
+
     setPage(currentPage + 1);
-    await list(currentPage, finishedPosts).then((newPosts: Post[] | null) => {
-      if (newPosts) setPosts(posts.concat(newPosts));
+    await list(page, usrPostData, filter).then((newPosts: Post[] | null) => {
+      if (newPosts) {
+        if (resetPosts) setPosts(newPosts);
+        else setPosts(posts.concat(newPosts));
+      }
     });
+    setPostsLoading(false);
   };
 
   const loadData = async () => {
@@ -32,20 +55,11 @@ export default function Home() {
       if (!isAuthenticated) document.location.href = "/login";
       const post = await get(user.lastViewedPost);
 
-      let finishedPosts: string[] = [];
-      if (user.postData) {
-        Object.keys(user.postData).forEach((post_id: string) => {
-          if (user?.postData) {
-            const postProgress = user.postData[post_id];
-            if (postProgress >= 1) finishedPosts.push(post_id);
-          }
-        });
-      }
       if (user.postData && user.postData[user.lastViewedPost])
         setProgress(user.postData[user.lastViewedPost] * 100);
-      setPost(post);
-      await loadPosts(finishedPosts);
       setLoading(false);
+      setPost(post);
+      await loadPosts();
     });
   };
 
@@ -61,7 +75,12 @@ export default function Home() {
   useEffect(() => {
     if (node.current) {
       node.current.addEventListener("scroll", handleScroll);
-      return () => node.current.removeEventListener("scroll", handleScroll);
+
+      return () => {
+        if (node.current) {
+          node.current.removeEventListener("scroll", handleScroll);
+        }
+      };
     }
   }, [node, handleScroll]);
 
@@ -96,22 +115,45 @@ export default function Home() {
         </Title>
         {lastViewedPost && <ProgressBar progress={progress} />}
 
-        <Title top-margin>Seu feed</Title>
+        <Title className="flex" top-margin>
+          Seu feed
+          <Filters
+            selectedFilter={selectedFilter}
+            handleFilterChange={handleFilterChange}
+          />
+        </Title>
         <div
           ref={node as any}
           className="grid grid-cols-1 mt-2 items-stretch md:grid-cols-2 rounded-lg pb-10 sm:h-[21rem] overflow-x-hidden overflow-y-scroll gap-3 pr-1"
         >
-          {posts.length > 0 &&
-            posts.map((post) => (
-              <PostComponent
-                finished={user && user.postData && user.postData[post._id] == 1}
-                _id={post._id}
-                title={post.title}
-                content={post.content}
-                icon={post.icon}
-              />
-            ))}
-          {posts.length === 0 && (
+          {!postsLoading &&
+            posts.length > 0 &&
+            posts.map((post) => {
+              let status;
+              if (user && user.postData) {
+                if (user.postData[post._id] == 1) status = "finished";
+                if (user.postData[post._id] < 1) status = "seen";
+              }
+              return (
+                <PostComponent
+                  status={status as "finished" | "seen" | undefined}
+                  _id={post._id}
+                  title={post.title}
+                  content={post.content}
+                  icon={post.icon}
+                />
+              );
+            })}
+          {postsLoading && (
+            <>
+              <PostPlaceholder />
+              <PostPlaceholder />
+              <PostPlaceholder />
+              <PostPlaceholder />
+            </>
+          )}
+
+          {posts.length === 0 && !postsLoading && (
             <h1 className="text-dark dark:text-light">
               Nenhum post por enquanto.
             </h1>

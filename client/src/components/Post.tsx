@@ -4,7 +4,7 @@ export function Post(props: {
   content: string;
   _id: string;
   icon: string;
-  finished?: boolean;
+  status?: "finished" | "seen";
 }) {
   return (
     <div
@@ -16,7 +16,15 @@ export function Post(props: {
         <h1 className="text-white my-auto text-lg sm:text-xl font-medium">
           {props.title}
         </h1>
-        {props.finished && (
+        {props.status === "finished" && (
+          <Icon
+            noBackground
+            icon="circle-check"
+            size="xl"
+            className="text-white my-auto ml-auto h-6 w-6 -mt-2 -mr-3"
+          />
+        )}
+        {props.status === "seen" && (
           <Icon
             noBackground
             icon="check-double"

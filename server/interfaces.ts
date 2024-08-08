@@ -15,6 +15,10 @@ export interface AuthenticatedUser {
   lastViewedPost: string;
 }
 
+export interface UserPostData {
+  [keys: string]: number;
+}
+
 export interface Post {
   _id: ObjectId,
   title: string,

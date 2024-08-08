@@ -2,8 +2,14 @@ export interface AuthenticatedUser {
   _id: string;
   username: string;
   lastViewedPost: string;
-  postData?: {[keys: string]: number},
+  postData?: UserPostData;
 }
+
+export interface UserPostData {
+  [keys: string]: number;
+}
+
+export type PostFilters = "all" | "unseen" | "in-progress" | "finished";
 
 export interface Post {
   _id: string;
