@@ -26,22 +26,24 @@ export default function PostPage(props: { params: { post_id: string } }) {
         document.location.href = "/login";
         return;
       }
-      if (currentPostData) {
-        if (currentPostData.steps) {
-          if (user.postData && user.postData[postId]) {
-            setStep(user.postData[postId] * currentPostData.steps.length + 1);
-          } else {
-            await setPostProgress(
-              props.params.post_id,
-              0,
-              currentPostData.steps.length
-            );
-          }
-          await setLastViewedPost(postId);
-        }
-        setPost(currentPostData);
+      if (!currentPostData) {
         setLoading(false);
+        return;
       }
+      if (currentPostData.steps) {
+        if (user.postData && user.postData[postId]) {
+          setStep(user.postData[postId] * currentPostData.steps.length + 1);
+        } else {
+          await setPostProgress(
+            props.params.post_id,
+            0,
+            currentPostData.steps.length
+          );
+        }
+        await setLastViewedPost(postId);
+      }
+      setPost(currentPostData);
+      setLoading(false);
     });
   }, []);
 

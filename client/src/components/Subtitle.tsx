@@ -7,7 +7,7 @@ export function Subtitle(props: {
 }) {
   return (
     <h1
-      className={`text-dark dark:text-light text-xl ${props.className} ${
+      className={`text-dark dark:text-light w-full text-xl ${props.className} ${
         props.centered && "text-center"
       }`}
     >

@@ -34,7 +34,7 @@ export function Header() {
   };
 
   return (
-    <header className="bg-primary dark:bg-primary-dark px-4 h-20 w-full top-0 left-0 flex">
+    <header className="bg-primary dark:bg-primary-dark px-4 h-20 w-full top-0 left-0 flex shadow-md">
       <FontAwesomeIcon
         onClick={() => setMenuOpen(!menuOpen)}
         className="sm:invisible visible sm:absolute flex my-auto mr-4 cursor-pointer"

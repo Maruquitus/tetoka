@@ -32,7 +32,7 @@ export async function setLastViewedPost(userID: ObjectId, postID: ObjectId) {
   return users.updateOne({ _id: userID }, { $set: { lastViewedPost: postID } });
 }
 
-export async function create(username: string, password: string) {
+export async function create(username: string, email: string, password: string) {
   if (validateUser(username) == false)
     return Error(
       "Nome de usuário inválido! Use apenas letras, números ou underscores."
@@ -46,6 +46,7 @@ export async function create(username: string, password: string) {
     }
     await users.insertOne({
       username: username,
+      email: email,
       password: result,
       lastViewedPost: "",
     });

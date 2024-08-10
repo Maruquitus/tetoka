@@ -10,6 +10,8 @@ import { LoadDependent } from "@/components/LoadDependent";
 import { checkAuthenticated } from "@/api/Auth";
 import { Filters } from "@/components/Filters";
 import { PostPlaceholder } from "@/components/PostPlaceholder";
+import Empty from "../../../public/Empty.svg";
+import Image from "next/image";
 
 export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -115,7 +117,7 @@ export default function Home() {
         </Title>
         {lastViewedPost && <ProgressBar progress={progress} />}
 
-        <Title className="flex" top-margin>
+        <Title className="flex sm:flex-row flex-col" top-margin>
           Seu feed
           <Filters
             selectedFilter={selectedFilter}
@@ -130,9 +132,11 @@ export default function Home() {
             posts.length > 0 &&
             posts.map((post) => {
               let status;
+              let progress;
               if (user && user.postData) {
                 if (user.postData[post._id] == 1) status = "finished";
                 if (user.postData[post._id] < 1) status = "seen";
+                progress = user.postData[post._id];
               }
               return (
                 <PostComponent
@@ -141,6 +145,7 @@ export default function Home() {
                   title={post.title}
                   content={post.content}
                   icon={post.icon}
+                  progress={progress}
                 />
               );
             })}
@@ -154,9 +159,12 @@ export default function Home() {
           )}
 
           {posts.length === 0 && !postsLoading && (
-            <h1 className="text-dark dark:text-light">
-              Nenhum post por enquanto.
-            </h1>
+            <div className="overflow-hidden">
+              <h1 className="text-dark dark:text-light">
+                Nenhum post por enquanto.
+              </h1>
+              <Image className="sm:w-[60%] mx-auto" src={Empty} alt="" />
+            </div>
           )}
         </div>
       </main>

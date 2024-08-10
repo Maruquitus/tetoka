@@ -53,14 +53,22 @@ export const newUser = async (req: Request, res: Response) => {
   const isBrowser = checkBrowser(req);
   if (req.body.confirmPassword !== req.body.password)
     result = Error("Confirmação de senha incorreta. Tente novamente.");
-  if (!result && req.body.password.length < 8)
+
+  if (req.body.password.length < 8)
     result = Error("Senha muito curta! Mínimo de 8 caracteres.");
-  if (!result) result = await create(req.body.username, req.body.password);
+
+  const emailRegex = /^[^s@]+@[^s@]+.[^s@]+$/;
+  if (emailRegex.test(req.body.email))
+    result = Error("Insira um email válido!");
+
+  if (!result)
+    result = await create(req.body.username, req.body.email, req.body.password);
+
   if (result instanceof Error) {
-    if (isBrowser) res.redirect(`/signup?erro=${result.message}`);
+    if (isBrowser) res.redirect(`/signup?error=${result.message}`);
     else res.status(400).send(result.message);
   } else {
-    if (isBrowser) res.redirect("/home");
+    if (isBrowser) res.redirect("/login");
     else res.status(200).send("Usuário criado com sucesso!");
   }
 };

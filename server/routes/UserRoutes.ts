@@ -25,7 +25,7 @@ router.post(
     requireAuthenticatedUser(req, res, next),
   (req: AuthenticatedRequest, res: any) => setLastViewedPostByUser(req, res)
 );
-router.put("/", (req, res) => newUser(req, res));
+router.post("/", (req, res) => newUser(req, res));
 router.get("/:userid", requireAdminToken, (req, res) => getUser(req, res));
 router.delete("/:userid", requireAdminToken, (req, res) =>
   deleteUser(req, res)

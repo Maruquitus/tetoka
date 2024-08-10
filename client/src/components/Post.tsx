@@ -1,10 +1,12 @@
 import { Icon } from "./Icon";
+import { ProgressBar } from "./ProgressBar";
 export function Post(props: {
   title: string;
   content: string;
   _id: string;
   icon: string;
   status?: "finished" | "seen";
+  progress?: number;
 }) {
   return (
     <div
@@ -36,6 +38,9 @@ export function Post(props: {
       <p className="text-white text-sm sm:text-base line-clamp-2 sm:line-clamp-3 mt-2">
         {props.content}
       </p>
+      {props.progress !== undefined && props.progress > 0 && (
+        <ProgressBar small progress={props.progress * 100} />
+      )}
     </div>
   );
 }

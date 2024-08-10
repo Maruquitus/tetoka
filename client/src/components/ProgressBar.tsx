@@ -1,7 +1,7 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
-export function ProgressBar(props: { progress: number }) {
+export function ProgressBar(props: { progress: number; small?: boolean }) {
   const progressRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
     if (progressRef.current)
@@ -10,14 +10,28 @@ export function ProgressBar(props: { progress: number }) {
 
   return (
     <div>
-      <div className="bg-foreground dark:bg-foreground-dark mt-2 h-4 w-full rounded-full overflow-hidden">
+      <div
+        className={`mt-2 ${
+          props.small
+            ? "h-3 border border-white"
+            : "h-4 bg-foreground dark:bg-foreground-dark"
+        } w-full rounded-full overflow-hidden`}
+      >
         <div
           ref={progressRef}
           id="progress"
-          className={`bg-primary w-0 dark:bg-primary-dark transition-transform duration-200 flex h-4`}
+          className={`w-0 ${
+            props.small ? "h-3 bg-white" : "bg-primary dark:bg-primary-dark"
+          }   transition-transform duration-200 flex h-4`}
         />
       </div>
-      <h1 className="dark:text-light text-dark font-medium text-right">
+      <h1
+        className={`${
+          props.small
+            ? "text-white text-sm -mb-3"
+            : "dark:text-light text-dark font-medium"
+        } text-right`}
+      >
         {props.progress}%
       </h1>
     </div>

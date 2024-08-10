@@ -13,8 +13,20 @@ module.exports = {
         "fade-out": "fade-out 0.5s",
         "slide-in": "slide-in 0.5s",
         "slide-out": "slide-out 0.5s",
+        flying: "wind 1.5s infinite 0s",
       },
       keyframes: {
+        wind: {
+          "0%": {
+            transform: "rotate(1deg)",
+          },
+          "50%": {
+            transform: "rotate(-1deg)",
+          },
+          "100%": {
+            transform: "rotate(1deg)",
+          },
+        },
         "slide-in": {
           "0%": { transform: "translate(-100%, 0px)" },
           "100%": { transform: "translate(0%, 0px)" },
