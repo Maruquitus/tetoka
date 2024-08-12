@@ -2,7 +2,9 @@
   "name": "tetoka",
   "version": "1.0.0",
   "scripts": {
-    "dev": "concurrently \"cd server && nodemon\" \"cd client && npm run dev\""
+    "dev": "concurrently \"cd server && nodemon\" \"cd client && npm run dev\"",
+    "build": "cd client && npm install && npm run build && cd .. && cd server && npm install",
+    "start": "cd server && ts-node main.ts"
   },
   "author": "Marcos Sousa",
   "license": "ISC",

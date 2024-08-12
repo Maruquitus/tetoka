@@ -16,6 +16,7 @@ export function Filters(props: {
     <div className="ml-auto flex flex-wrap justify-end gap-y-2 sm:space-x-2 sm:flex sm:mr-5">
       {Object.keys(types).map((type: string) => (
         <button
+          key={type}
           onClick={() => props.handleFilterChange(type)}
           className={`${defaultFilterClassName} ${
             props.selectedFilter === type ? activeClassname : inactiveClassname

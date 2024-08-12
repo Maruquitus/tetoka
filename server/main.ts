@@ -4,24 +4,32 @@ import { authenticateUser } from "./services/AuthService";
 import authRoutes from "./routes/AuthRoutes";
 import userRoutes from "./routes/UserRoutes";
 import postRoutes from "./routes/PostRoutes";
+import next from "next";
+import { IncomingMessage, ServerResponse } from "http";
 
 /*===========IMPORTS===========*/
 const express = require("express");
 const bodyParser = require("body-parser");
+const path = require("path");
 export const app = express();
 export var passport = require("passport");
 const session = require("express-session");
 var LocalStrategy = require("passport-local");
 
+const nextApp = next({
+  dev: false,
+  dir: path.resolve(__dirname, "../client"),
+});
+const handle = nextApp.getRequestHandler();
+
 /*===========CONFIGURAÇÕES INICIAIS===========*/
-//Usar o body parser
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-//Autenticação
+// Autenticação
 app.use(passport.initialize());
 
-//Configurar session
+// Configurar session
 app.use(
   session({
     secret: process.env.SECRET,
@@ -35,7 +43,7 @@ app.use(
 
 app.use(passport.authenticate("session"));
 
-//Setup de autenticação
+// Setup de autenticação
 passport.use(
   new LocalStrategy(async function verify(
     username: string,
@@ -54,7 +62,7 @@ passport.use(
   })
 );
 
-//Serialização e deserialização
+// Serialização e deserialização
 passport.serializeUser(function (user: AuthenticatedUser, cb: Function) {
   process.nextTick(function () {
     cb(null, { _id: user._id, username: user.username });
@@ -67,11 +75,14 @@ passport.deserializeUser(function (user: AuthenticatedUser, cb: Function) {
   });
 });
 
-//Inicializar o servidor
+// Inicializar o servidor
 const port = 3001;
 async function init() {
-  const db = await run(); //Aguardar inicialização da bd
+  const db = await run(); // Aguardar inicialização da bd
   if (!db) throw Error("Erro ao inicializar bd!");
+
+  await nextApp.prepare();
+
   app.listen(port, () => {
     console.log(`Servidor executando na porta ${port}`);
   });
@@ -79,8 +90,13 @@ async function init() {
 init();
 
 /*===========ROTAS===========*/
-app.use("/auth/", authRoutes);
-app.use("/users/", userRoutes);
-app.use("/posts/", postRoutes);
+app.use("/api/auth/", authRoutes);
+app.use("/api/users/", userRoutes);
+app.use("/api/posts/", postRoutes);
+
+// Todos os outros requests vão para o Next.js
+app.all("*", (req: IncomingMessage, res: ServerResponse<IncomingMessage>) => {
+  return handle(req, res);
+});
 
 export default app;

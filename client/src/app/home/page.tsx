@@ -140,6 +140,7 @@ export default function Home() {
               }
               return (
                 <PostComponent
+                  key={post._id}
                   status={status as "finished" | "seen" | undefined}
                   _id={post._id}
                   title={post.title}
