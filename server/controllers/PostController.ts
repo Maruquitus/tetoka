@@ -51,6 +51,9 @@ export const listPosts = async (req: Request, res: Response) => {
 };
 
 export const loadPosts = async (req: Request, res: Response) => {
+  const userInterests = req.query.userInterests
+    ? JSON.parse(req.query.userInterests as string)
+    : [];
   let filter = req.query.filter as string;
   filter = filter ? filter : "all";
   const userPostData = req.query.userPostData
@@ -59,7 +62,9 @@ export const loadPosts = async (req: Request, res: Response) => {
   const pageNumber = parseInt(req.params.pagenumber);
   if (isNaN(pageNumber) || pageNumber <= 0) return res.sendStatus(400);
 
-  return res.status(200).send(await list(userPostData, pageNumber, filter));
+  return res
+    .status(200)
+    .send(await list(userPostData, pageNumber, filter, userInterests));
 };
 
 export const loadPostsByTags = async (req: Request, res: Response) => {

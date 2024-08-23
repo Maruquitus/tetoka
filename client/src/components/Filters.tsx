@@ -9,7 +9,7 @@ export function Filters(props: {
     finished: "Concluídos",
   };
   const defaultFilterClassName =
-    "h-8 min-w-20 px-3 mr-2 sm:mr-0 rounded-lg font-semibold text-sm text-white hover:scale-[102%] duration-300 transition-transform";
+    "hidden sm:block h-8 min-w-20 px-3 mr-2 sm:mr-0 rounded-lg font-semibold text-sm text-white hover:scale-[102%] duration-300 transition-transform";
   const activeClassname = "bg-primary dark:bg-primary-dark";
   const inactiveClassname = "bg-primary-dark dark:bg-primary-dark/60";
   return (

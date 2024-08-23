@@ -51,6 +51,9 @@ export const setUserPostProgress = async (
 export const newUser = async (req: Request, res: Response) => {
   let result;
   const isBrowser = checkBrowser(req);
+
+  if (!req.body.username) result = Error("Insira um nome de usuário.");
+
   if (req.body.confirmPassword !== req.body.password)
     result = Error("Confirmação de senha incorreta. Tente novamente.");
 
@@ -61,8 +64,16 @@ export const newUser = async (req: Request, res: Response) => {
   if (emailRegex.test(req.body.email))
     result = Error("Insira um email válido!");
 
+  if (req.body.interests.length === 0)
+    result = Error("Selecione ao menos um interesse!");
+
   if (!result)
-    result = await create(req.body.username, req.body.email, req.body.password);
+    result = await create(
+      req.body.username,
+      req.body.email,
+      req.body.password,
+      req.body.interests
+    );
 
   if (result instanceof Error) {
     if (isBrowser) res.redirect(`/signup?error=${result.message}`);

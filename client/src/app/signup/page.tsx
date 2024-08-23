@@ -5,10 +5,13 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { Title } from "@/components/Title";
 import { Error } from "@/components/Error";
+import PreferencesModal from "@/components/PreferencesModal";
 
 export default function SignUp() {
+  const [modalVisible, setModalVisible] = useState(false);
   const [passwordVisible, setVisible] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [interests, setInterests] = useState<string[]>([]);
 
   useEffect(() => {
     const queryParameters = new URLSearchParams(window.location.search);
@@ -16,14 +19,60 @@ export default function SignUp() {
     if (err) setError(err);
   }, []);
 
+  const handleSubmit = async () => {
+    const form = document.getElementById("form") as HTMLFormElement;
+    if (!form) return;
+    const formData = new FormData(form);
+
+    const data = {
+      username: formData.get("name") as string,
+      email: formData.get("email") as string,
+      password: formData.get("password") as string,
+      confirmPassword: formData.get("confirmPassword") as string,
+      interests: interests,
+    };
+
+    try {
+      const response = await fetch("/api/users/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      if (response.status !== 200) {
+        setModalVisible(false);
+        throw await response.text();
+      }
+      document.location.href = "/login";
+      setError(null);
+    } catch (err: any) {
+      setError(err);
+    }
+  };
+
   return (
     <main className="w-4/5 h-fit mt-10 mx-auto pb-10">
+      <PreferencesModal
+        setInterests={setInterests}
+        interests={interests}
+        handleSubmit={handleSubmit}
+        visible={modalVisible}
+        setVisible={setModalVisible}
+      />
       <div className="flex md:flex-row flex-col items-center justify-center h-fit">
         <aside className="md:w-1/2 h-fit">
           <Title className="text-3xl mb-2">Seu futuro começa aqui!</Title>
 
           <div className="bg-foreground dark:bg-foreground-dark p-8 py-6 rounded-xl shadow-lg w-full max-w-md">
-            <form className="space-y-4" method="POST" action="/api/users/">
+            <form
+              id="form"
+              className="space-y-4"
+              onSubmit={(e) => {
+                setModalVisible(true);
+                e.preventDefault();
+              }}
+            >
               <div className="space-y-1">
                 <label className="block text-dark dark:text-light text-sm font-medium">
                   Nome de usuário
@@ -82,7 +131,7 @@ export default function SignUp() {
                 </label>
               </div>
               <div className="flex justify-center">
-                <Button title="Cadastrar" />
+                <Button title="Prosseguir" />
               </div>
             </form>
             {error && <Error title={error} />}

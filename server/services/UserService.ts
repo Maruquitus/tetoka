@@ -6,6 +6,7 @@ import { hashPassword } from "../utils/functions";
 export async function getByUsername(username: string) {
   return users.findOne({ username: username });
 }
+
 export async function getByID(_id: ObjectId) {
   return users.findOne({ _id: _id });
 }
@@ -24,15 +25,23 @@ export async function setPostProgress(
   stepsCompleted: number,
   totalSteps: number
 ) {
-  const updateField = `postData.${postID}`
-  return users.updateOne({ _id: userID }, { $set: { [updateField]: stepsCompleted/totalSteps } });
+  const updateField = `postData.${postID}`;
+  return users.updateOne(
+    { _id: userID },
+    { $set: { [updateField]: stepsCompleted / totalSteps } }
+  );
 }
 
 export async function setLastViewedPost(userID: ObjectId, postID: ObjectId) {
   return users.updateOne({ _id: userID }, { $set: { lastViewedPost: postID } });
 }
 
-export async function create(username: string, email: string, password: string) {
+export async function create(
+  username: string,
+  email: string,
+  password: string,
+  interests: string[]
+) {
   if (validateUser(username) == false)
     return Error(
       "Nome de usuário inválido! Use apenas letras, números ou underscores."
@@ -49,6 +58,7 @@ export async function create(username: string, email: string, password: string) 
       email: email,
       password: result,
       lastViewedPost: "",
+      interests: interests,
     });
     return "Usuário criado com sucesso!";
   } else {

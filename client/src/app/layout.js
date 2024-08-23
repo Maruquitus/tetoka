@@ -20,7 +20,8 @@ export default function RootLayout({ children }) {
       <body className="dark:bg-black select-none">
         <Provider>
           <Header />
-          {children}
+
+          <div className="mt-28"> {children}</div>
         </Provider>
       </body>
     </html>

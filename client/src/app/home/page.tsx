@@ -28,41 +28,53 @@ export default function Home() {
     setPage(1);
     setFilter(filter);
     setPosts([]);
-    setTimeout(() => loadPosts(filter, 1, true), 250);
+    setTimeout(() => loadPosts({ filter, page: 1, resetPosts: true }), 250);
   };
 
-  const loadPosts = async (
-    filter?: PostFilters,
-    page?: number,
-    resetPosts?: boolean
-  ) => {
+  const loadPosts = async ({
+    filter,
+    page,
+    resetPosts,
+    userInterests,
+  }: {
+    filter?: PostFilters;
+    page?: number;
+    resetPosts?: boolean;
+    userInterests?: string[];
+  } = {}) => {
     const usrPostData = user?.postData ? user.postData : {};
-    filter = filter ? filter : selectedFilter;
-    page = page ? page : currentPage;
+    const usrInterests = userInterests || user?.interests || [];
+    filter = filter || selectedFilter;
+    page = page || currentPage;
 
     setPage(currentPage + 1);
-    await list(page, usrPostData, filter).then((newPosts: Post[] | null) => {
-      if (newPosts) {
-        if (resetPosts) setPosts(newPosts);
-        else setPosts(posts.concat(newPosts));
+    await list(page, usrPostData, filter, usrInterests).then(
+      (newPosts: Post[] | null) => {
+        if (newPosts) {
+          if (resetPosts) setPosts(newPosts);
+          else setPosts((prevPosts) => prevPosts.concat(newPosts));
+        }
       }
-    });
+    );
     setPostsLoading(false);
   };
 
   const loadData = async () => {
-    checkAuthenticated().then(async (data) => {
-      const [isAuthenticated, user] = data;
-      setUser(user);
-      if (!isAuthenticated) document.location.href = "/login";
+    const [isAuthenticated, user] = await checkAuthenticated();
+    setUser(user);
+    if (!isAuthenticated) {
+      document.location.href = "/login";
+      return;
+    }
+    if (user.lastViewedPost) {
       const post = await get(user.lastViewedPost);
-
-      if (user.postData && user.postData[user.lastViewedPost])
+      if (user.postData && user.postData[user.lastViewedPost]) {
         setProgress(user.postData[user.lastViewedPost] * 100);
-      setLoading(false);
+      }
       setPost(post);
-      await loadPosts();
-    });
+    }
+    setLoading(false);
+    await loadPosts({ userInterests: user.interests, resetPosts: true });
   };
 
   // Scroll e loading infinito
@@ -71,7 +83,6 @@ export default function Home() {
     const { scrollTop, scrollHeight, clientHeight } = node.current;
     if (scrollTop + clientHeight === scrollHeight) {
       loadPosts();
-    } else {
     }
   };
   useEffect(() => {
@@ -109,7 +120,7 @@ export default function Home() {
               </Highlight>
             </div>
           ) : (
-            <span className="font-medium w-fit whitespace-nowrap mr-1.5">
+            <span className="font-medium w-fit break-words mr-1.5 -mb-6 sm:-mb-4">
               Selecione um post para começar a acompanhar seu{" "}
               <Highlight>progresso</Highlight>.
             </span>
@@ -117,12 +128,24 @@ export default function Home() {
         </Title>
         {lastViewedPost && <ProgressBar progress={progress} />}
 
-        <Title className="flex sm:flex-row flex-col" top-margin>
+        <Title className="flex" top-margin>
           Seu feed
           <Filters
             selectedFilter={selectedFilter}
             handleFilterChange={handleFilterChange}
           />
+          <select
+            className="sm:hidden rounded-lg text-white bg-primary dark:bg-primary-dark text-sm p-2 outline-none"
+            value={selectedFilter}
+            onChange={(e) =>
+              handleFilterChange(e.currentTarget.value as PostFilters)
+            }
+          >
+            <option value="all">Todos</option>
+            <option value="unseen">Novos</option>
+            <option value="in-progress">Em progresso</option>
+            <option value="finished">Concluídos</option>
+          </select>
         </Title>
         <div
           ref={node as any}

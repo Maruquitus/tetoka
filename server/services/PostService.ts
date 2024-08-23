@@ -25,56 +25,67 @@ const postsPerPage = 10;
 export async function list(
   userPostData?: UserPostData,
   pageNumber?: number,
-  filter?: string
+  filter?: string,
+  userInterests?: string[]
 ) {
-  let postData;
+  let matchStage = {};
   let filteredPostIDs: ObjectId[] = [];
 
-  if (pageNumber !== undefined) {
-    if (userPostData && filter) {
-      if (filter === "all") {
-        postData = await posts.find({});
-      }
-
-      if (["unseen", "seen"].includes(filter)) {
-        Object.keys(userPostData).forEach((post_id: string) => {
-          const postProgress = userPostData[post_id];
-          if (postProgress >= 0) filteredPostIDs.push(new ObjectId(post_id));
-        });
-
-        if (filter === "unseen")
-          postData = await posts.find({ _id: { $nin: filteredPostIDs } });
-        if (filter === "seen")
-          postData = await posts.find({ _id: { $in: filteredPostIDs } });
-      }
-
-      if (filter === "in-progress") {
-        Object.keys(userPostData).forEach((post_id: string) => {
-          const postProgress = userPostData[post_id];
-          if (postProgress < 1 && postProgress > 0) filteredPostIDs.push(new ObjectId(post_id));
-        });
-
-        postData = await posts.find({ _id: { $in: filteredPostIDs } });
-      }
-
-      if (filter === "finished") {
-        Object.keys(userPostData).forEach((post_id: string) => {
-          const postProgress = userPostData[post_id];
-          if (postProgress === 1) filteredPostIDs.push(new ObjectId(post_id));
-        });
-
-        postData = await posts.find({ _id: { $in: filteredPostIDs } });
-      }
+  if (userPostData && filter) {
+    if (filter === "all") {
+      matchStage = {};
     }
 
-    if (postData)
-      return postData
-        .sort({ _id: 1 })
-        .skip((pageNumber - 1) * postsPerPage)
-        .limit(postsPerPage)
-        .toArray();
+    if (["unseen", "seen"].includes(filter)) {
+      Object.keys(userPostData).forEach((post_id: string) => {
+        const postProgress = userPostData[post_id];
+        if (postProgress >= 0) filteredPostIDs.push(new ObjectId(post_id));
+      });
+
+      if (filter === "unseen") matchStage = { _id: { $nin: filteredPostIDs } };
+      if (filter === "seen") matchStage = { _id: { $in: filteredPostIDs } };
+    }
+
+    if (filter === "in-progress") {
+      Object.keys(userPostData).forEach((post_id: string) => {
+        const postProgress = userPostData[post_id];
+        if (postProgress < 1 && postProgress > 0)
+          filteredPostIDs.push(new ObjectId(post_id));
+      });
+
+      matchStage = { _id: { $in: filteredPostIDs } };
+    }
+
+    if (filter === "finished") {
+      Object.keys(userPostData).forEach((post_id: string) => {
+        const postProgress = userPostData[post_id];
+        if (postProgress === 1) filteredPostIDs.push(new ObjectId(post_id));
+      });
+
+      matchStage = { _id: { $in: filteredPostIDs } };
+    }
   }
-  return await posts.find({}).toArray();
+
+  const pipeline: any[] = [
+    { $match: matchStage },
+    {
+      $addFields: {
+        matchScore: {
+          $size: { $setIntersection: ["$tags", userInterests || []] },
+        },
+      },
+    },
+    { $sort: { matchScore: -1, _id: 1 } },
+  ];
+
+  if (pageNumber !== undefined) {
+    pipeline.push(
+      { $skip: (pageNumber - 1) * postsPerPage },
+      { $limit: postsPerPage }
+    );
+  }
+
+  return await posts.aggregate(pipeline).toArray();
 }
 
 export async function getByTags(postTags: string[], pageNumber?: number) {

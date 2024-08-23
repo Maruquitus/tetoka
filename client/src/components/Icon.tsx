@@ -22,7 +22,7 @@ export function Icon(props: {
     <FontAwesomeIcon
       onClick={() => props.onClick?.()}
       size={props.size}
-      className={`h-4 w-4 transition-transform ${
+      className={`h-4 w-4 aspect-square transition-transform ${
         props.onClick && "hover:scale-[102%] cursor-pointer"
       } duration-300 ${
         !props.noBackground && "bg-primary dark:bg-primary-dark p-2"

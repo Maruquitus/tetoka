@@ -7,6 +7,8 @@ import postRoutes from "./routes/PostRoutes";
 import next from "next";
 import { IncomingMessage, ServerResponse } from "http";
 
+const DEV = true;
+
 /*===========IMPORTS===========*/
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -81,7 +83,7 @@ async function init() {
   const db = await run(); // Aguardar inicialização da bd
   if (!db) throw Error("Erro ao inicializar bd!");
 
-  await nextApp.prepare();
+  if (!DEV) await nextApp.prepare();
 
   app.listen(port, () => {
     console.log(`Servidor executando na porta ${port}`);
@@ -95,8 +97,9 @@ app.use("/api/users/", userRoutes);
 app.use("/api/posts/", postRoutes);
 
 // Todos os outros requests vão para o Next.js
-app.all("*", (req: IncomingMessage, res: ServerResponse<IncomingMessage>) => {
-  return handle(req, res);
-});
+if (!DEV)
+  app.all("*", (req: IncomingMessage, res: ServerResponse<IncomingMessage>) => {
+    return handle(req, res);
+  });
 
 export default app;

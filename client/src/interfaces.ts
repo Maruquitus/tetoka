@@ -3,6 +3,7 @@ export interface AuthenticatedUser {
   username: string;
   lastViewedPost: string;
   postData?: UserPostData;
+  interests: string[];
 }
 
 export interface UserPostData {

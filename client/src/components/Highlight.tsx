@@ -9,7 +9,7 @@ export function Highlight(props: {
   return (
     <span
       onClick={() => props.onClick?.()}
-      className={`text-primary inline-flex font-medium max-w-3/5 truncate ${
+      className={`text-primary inline-flex font-medium max-w-[100%] ${
         props.selectable && "select-text"
       } ${
         props.onClick !== undefined &&

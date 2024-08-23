@@ -46,12 +46,8 @@ export const checkAuthenticated = async (
   if (req.user) {
     try {
       const userData = await getByID(new ObjectId(req.user._id));
-      const filteredUserData = {
-        _id: userData?._id,
-        username: userData?.username,
-        lastViewedPost: userData?.lastViewedPost,
-        postData: userData?.postData,
-      } as AuthenticatedUser;
+      let filteredUserData = userData;
+      delete filteredUserData?.password;
       res.status(200).send([req.isAuthenticated(), filteredUserData]);
     } catch {
       res.sendStatus(500);
