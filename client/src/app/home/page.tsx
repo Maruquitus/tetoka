@@ -16,6 +16,7 @@ import Image from "next/image";
 export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [postsLoading, setPostsLoading] = useState(true);
+  const [infinitePostsLoading, setInfinitePostsLoading] = useState(false);
   const [progress, setProgress] = useState(0);
   const [currentPage, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
@@ -23,11 +24,11 @@ export default function Home() {
   const [lastViewedPost, setPost] = useState<Post | null>(null);
   const [user, setUser] = useState<AuthenticatedUser | undefined>();
 
+  const canInfiniteScroll = posts.length % 10 == 0;
+
   const handleFilterChange = (filter: PostFilters) => {
     setPostsLoading(true);
-    setPage(1);
     setFilter(filter);
-    setPosts([]);
     setTimeout(() => loadPosts({ filter, page: 1, resetPosts: true }), 250);
   };
 
@@ -47,12 +48,25 @@ export default function Home() {
     filter = filter || selectedFilter;
     page = page || currentPage;
 
-    setPage(currentPage + 1);
     await list(page, usrPostData, filter, usrInterests).then(
       (newPosts: Post[] | null) => {
         if (newPosts) {
-          if (resetPosts) setPosts(newPosts);
-          else setPosts((prevPosts) => prevPosts.concat(newPosts));
+          if (posts.concat(newPosts).length !== posts.length) {
+            setInfinitePostsLoading(true);
+
+            setPage(page + 1);
+          }
+          if (resetPosts) {
+            if (node.current) {
+              node.current.scrollTop = 0;
+            }
+            setPosts(newPosts);
+            setInfinitePostsLoading(false);
+          } else
+            setTimeout(() => {
+              setPosts((prevPosts) => prevPosts.concat(newPosts));
+              setInfinitePostsLoading(false);
+            }, 500);
         }
       }
     );
@@ -81,7 +95,7 @@ export default function Home() {
   const node = useRef() as any;
   const handleScroll = () => {
     const { scrollTop, scrollHeight, clientHeight } = node.current;
-    if (scrollTop + clientHeight === scrollHeight) {
+    if (scrollTop + clientHeight === scrollHeight && canInfiniteScroll) {
       loadPosts();
     }
   };
@@ -149,7 +163,7 @@ export default function Home() {
         </Title>
         <div
           ref={node as any}
-          className="grid grid-cols-1 mt-2 items-stretch md:grid-cols-2 rounded-lg pb-10 sm:h-[21rem] overflow-x-hidden overflow-y-scroll gap-3 pr-1"
+          className="grid grid-cols-1 mt-2 items-stretch md:grid-cols-2 rounded-lg pb-10 h-[21rem] overflow-x-hidden overflow-y-scroll gap-3 pr-1"
         >
           {!postsLoading &&
             posts.length > 0 &&
@@ -173,7 +187,7 @@ export default function Home() {
                 />
               );
             })}
-          {postsLoading && (
+          {(postsLoading || (infinitePostsLoading && canInfiniteScroll)) && (
             <>
               <PostPlaceholder />
               <PostPlaceholder />

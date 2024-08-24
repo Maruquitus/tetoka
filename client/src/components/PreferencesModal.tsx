@@ -92,7 +92,7 @@ export default function PreferencesModal(props: {
           e.stopPropagation();
         }}
         icon={faCheck}
-        className="bg-primary dark:bg-primary-dark text-2xl aspect-square text-white hover:scale-[102%] duration-300 transition-all cursor-pointer shadow-lg p-4 rounded-full absolute right-10 bottom-20 sm:bottom-20 mb-10 sm:right-20"
+        className="bg-primary dark:bg-primary-dark text-2xl aspect-square text-white hover:scale-[102%] duration-300 transition-all cursor-pointer shadow-lg p-4 rounded-full absolute right-10 bottom-28 sm:bottom-20 mb-10 sm:right-20"
       />
     </main>
   );
