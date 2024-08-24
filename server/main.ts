@@ -7,7 +7,7 @@ import postRoutes from "./routes/PostRoutes";
 import next from "next";
 import { IncomingMessage, ServerResponse } from "http";
 
-const DEV = true;
+const DEV = false;
 
 /*===========IMPORTS===========*/
 const express = require("express");
